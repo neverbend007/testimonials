@@ -3,191 +3,575 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Testimonial</title>
+    <title>Submit Your Experience - Testimonials</title>
+    <meta name="description" content="Share your experience with our AI and automation services. Help others discover the transformative power of our solutions.">
     <link rel="stylesheet" href="/styles.css">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <script src="/common.js"></script>
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Submit Your Experience - Testimonials">
+    <meta property="og:description" content="Share your experience with our AI and automation services.">
+    <meta property="og:type" content="website">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Submit Testimonial",
+        "description": "Share your experience with AI and automation services"
+    }
+    </script>
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/submit">Submit Testimonial</a></li>
-                <li><a href="/testimonials">View Testimonials</a></li>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <a href="/" class="nav-brand">
+                <svg class="nav-brand-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Testimonials
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/submit" class="nav-link active">Share Experience</a></li>
+                <li><a href="/testimonials" class="nav-link">View Testimonials</a></li>
             </ul>
-        </nav>
-    </header>
-
-    <div class="container">
-        <div class="card">
-            <h1>Submit Your Testimonial</h1>
-            <p>Share your experience with our AI/Automation services or Skool community. Your testimonial will be reviewed before publication.</p>
-            
-            <div id="message" class="hidden"></div>
-            
-            <form id="testimonialForm">
-                <div class="form-group">
-                    <label for="full_name">Full Name *</label>
-                    <input type="text" id="full_name" name="full_name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="source_type">You are a: *</label>
-                    <select id="source_type" name="source_type" required>
-                        <option value="">Please select...</option>
-                        <option value="Agency Client">Agency Client</option>
-                        <option value="Skool Community Member">Skool Community Member</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Star Rating *</label>
-                    <div class="star-rating" id="starRating">
-                        <span class="star" data-rating="1">★</span>
-                        <span class="star" data-rating="2">★</span>
-                        <span class="star" data-rating="3">★</span>
-                        <span class="star" data-rating="4">★</span>
-                        <span class="star" data-rating="5">★</span>
-                    </div>
-                    <input type="hidden" id="star_rating" name="star_rating" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="testimonial_text">Your Testimonial * (50-500 characters)</label>
-                    <textarea id="testimonial_text" name="testimonial_text" placeholder="Share your experience..." required minlength="50" maxlength="500"></textarea>
-                    <small id="charCount" style="color: #6c757d;">0/500 characters</small>
-                </div>
-                
-                <!-- Honeypot fields for spam protection -->
-                <input type="text" name="website" style="display: none;" tabindex="-1" autocomplete="off">
-                <input type="text" name="url" style="display: none;" tabindex="-1" autocomplete="off">
-                
-                <button type="submit" id="submitBtn">Submit Testimonial</button>
-            </form>
         </div>
-    </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="padding: 4rem 0; min-height: calc(100vh - 200px);">
+        <div class="container" style="max-width: 800px;">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+                    <div class="feature-icon" style="margin: 0;">
+                        <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="text-balance">Share Your Success Story</h1>
+                <p class="text-lead text-balance">
+                    Help others discover the transformative power of AI and automation by sharing your experience. Your testimonial will be reviewed before publication.
+                </p>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="hidden message success">
+                <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <strong>Thank you for your testimonial!</strong>
+                    <br>Your submission has been received and will be reviewed before publication. We appreciate you taking the time to share your experience.
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden message error">
+                <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <strong>Submission failed</strong>
+                    <br><span id="errorText">Please check your information and try again.</span>
+                </div>
+            </div>
+
+            <!-- Testimonial Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 style="margin: 0; font-size: 1.25rem;">Tell Us About Your Experience</h2>
+                    <p style="margin: 0.5rem 0 0 0; color: var(--gray-600); font-size: 0.875rem;">
+                        All fields marked with <span style="color: var(--danger-600);">*</span> are required
+                    </p>
+                </div>
+                <div class="card-body">
+                    <form id="testimonialForm" novalidate>
+                        <!-- Personal Information -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="margin-bottom: 1rem; font-size: 1.125rem; color: var(--gray-800);">Personal Information</h3>
+                            
+                            <div class="form-group">
+                                <label for="full_name" class="form-label">
+                                    Full Name <span style="color: var(--danger-600);">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="full_name" 
+                                    name="full_name" 
+                                    class="form-input" 
+                                    placeholder="Your full name"
+                                    required
+                                    maxlength="100"
+                                    autocomplete="name"
+                                >
+                                <div class="form-error" id="full_name_error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    Email Address <span style="color: var(--danger-600);">*</span>
+                                </label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-input" 
+                                    placeholder="your.email@example.com"
+                                    required
+                                    autocomplete="email"
+                                >
+                                <div class="form-error" id="email_error"></div>
+                                <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;">
+                                    Your email will not be published with your testimonial
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="source_type" class="form-label">
+                                    How do you know us? <span style="color: var(--danger-600);">*</span>
+                                </label>
+                                <select id="source_type" name="source_type" class="form-select" required>
+                                    <option value="">Please select...</option>
+                                    <option value="Agency Client">I'm an Agency Client</option>
+                                    <option value="Skool Community Member">I'm a Skool Community Member</option>
+                                </select>
+                                <div class="form-error" id="source_type_error"></div>
+                            </div>
+                        </div>
+
+                        <!-- Experience Details -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="margin-bottom: 1rem; font-size: 1.125rem; color: var(--gray-800);">Your Experience</h3>
+                            
+                            <div class="form-group">
+                                <label for="star_rating" class="form-label">
+                                    Overall Rating <span style="color: var(--danger-600);">*</span>
+                                </label>
+                                <div class="star-rating" id="star_rating_container">
+                                    <div class="star empty" data-rating="1">★</div>
+                                    <div class="star empty" data-rating="2">★</div>
+                                    <div class="star empty" data-rating="3">★</div>
+                                    <div class="star empty" data-rating="4">★</div>
+                                    <div class="star empty" data-rating="5">★</div>
+                                </div>
+                                <input type="hidden" id="star_rating" name="star_rating" required>
+                                <div class="form-error" id="star_rating_error"></div>
+                                <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;">
+                                    Click the stars to rate your experience
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="testimonial_text" class="form-label">
+                                    Your Testimonial <span style="color: var(--danger-600);">*</span>
+                                </label>
+                                <textarea 
+                                    id="testimonial_text" 
+                                    name="testimonial_text" 
+                                    class="form-textarea" 
+                                    rows="6"
+                                    placeholder="Please share your experience with our AI and automation services. What specific results did you achieve? How did it impact your business or workflow?"
+                                    required
+                                    minlength="50"
+                                    maxlength="500"
+                                ></textarea>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem;">
+                                    <div class="form-error" id="testimonial_text_error"></div>
+                                    <div style="font-size: 0.75rem; color: var(--gray-500);" id="char_count">
+                                        0/500 characters (minimum 50)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Anti-spam Fields (Hidden) -->
+                        <input type="text" name="website" style="display: none;" tabindex="-1" autocomplete="off">
+                        <input type="text" name="url" style="display: none;" tabindex="-1" autocomplete="off">
+
+                        <!-- Submit Button -->
+                        <div style="text-align: center; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-lg" style="min-width: 200px;">
+                                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                                <span id="submitBtnText">Submit Testimonial</span>
+                            </button>
+                            
+                            <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--gray-500); max-width: 400px; margin-left: auto; margin-right: auto;">
+                                By submitting this testimonial, you agree to allow us to publish your review publicly. Your email address will not be shared.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div style="margin-top: 3rem;">
+                <h2 style="text-align: center; margin-bottom: 2rem;">Tips for Writing a Great Testimonial</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div class="card">
+                        <div class="card-body" style="text-align: center;">
+                            <div class="feature-icon" style="margin: 0 auto 1rem;">
+                                <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h3 style="margin-bottom: 0.5rem;">Be Specific</h3>
+                            <p style="font-size: 0.875rem; margin: 0;">Share specific results, metrics, or improvements you experienced with our AI and automation solutions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body" style="text-align: center;">
+                            <div class="feature-icon" style="margin: 0 auto 1rem;">
+                                <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 style="margin-bottom: 0.5rem;">Be Authentic</h3>
+                            <p style="font-size: 0.875rem; margin: 0;">Write in your own voice and share your genuine experience. Authentic testimonials are the most powerful.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body" style="text-align: center;">
+                            <div class="feature-icon" style="margin: 0 auto 1rem;">
+                                <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 style="margin-bottom: 0.5rem;">Focus on Impact</h3>
+                            <p style="font-size: 0.875rem; margin: 0;">Highlight how our solutions transformed your business, saved time, or improved your workflows.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="padding: 2rem 0; background: var(--gray-900); color: var(--gray-300);">
+        <div class="container">
+            <div class="text-center">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <svg style="width: 1.5rem; height: 1.5rem; color: var(--primary-400);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span style="font-weight: 600; color: white;">Testimonials Platform</span>
+                </div>
+                <p style="font-size: 0.875rem; margin-bottom: 1rem;">Empowering businesses through AI and automation solutions</p>
+                <p style="font-size: 0.75rem; color: var(--gray-500);">
+                    © 2024 AI/Automation Agency. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Star rating functionality
-        const stars = document.querySelectorAll('.star');
-        const starRatingInput = document.getElementById('star_rating');
-        
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const rating = this.getAttribute('data-rating');
-                starRatingInput.value = rating;
-                
-                stars.forEach((s, index) => {
-                    if (index < rating) {
-                        s.classList.add('selected');
-                    } else {
-                        s.classList.remove('selected');
-                    }
-                });
-            });
-            
-            star.addEventListener('mouseover', function() {
-                const rating = this.getAttribute('data-rating');
-                stars.forEach((s, index) => {
-                    if (index < rating) {
-                        s.style.color = '#ffc107';
-                    } else {
-                        s.style.color = '#ddd';
-                    }
-                });
-            });
-        });
-        
-        document.querySelector('.star-rating').addEventListener('mouseleave', function() {
-            const selectedRating = starRatingInput.value;
-            stars.forEach((s, index) => {
-                if (index < selectedRating) {
-                    s.style.color = '#ffc107';
-                } else {
-                    s.style.color = '#ddd';
-                }
-            });
-        });
-        
-        // Character counter
-        const testimonialText = document.getElementById('testimonial_text');
-        const charCount = document.getElementById('charCount');
-        
-        testimonialText.addEventListener('input', function() {
-            const count = this.value.length;
-            charCount.textContent = `${count}/500 characters`;
-            
-            if (count < 50) {
-                charCount.style.color = '#dc3545';
-            } else if (count > 450) {
-                charCount.style.color = '#ffc107';
-            } else {
-                charCount.style.color = '#28a745';
-            }
-        });
-        
-        // Form submission
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:3001/api';
+
+        // DOM Elements
         const form = document.getElementById('testimonialForm');
         const submitBtn = document.getElementById('submitBtn');
-        const messageDiv = document.getElementById('message');
-        
-        function showMessage(text, type) {
-            messageDiv.textContent = text;
-            messageDiv.className = `message ${type}`;
-            messageDiv.classList.remove('hidden');
-            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        const submitBtnText = document.getElementById('submitBtnText');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const charCount = document.getElementById('char_count');
+        const testimonialTextArea = document.getElementById('testimonial_text');
+
+        // Star Rating Functionality
+        const stars = document.querySelectorAll('.star');
+        const starRatingInput = document.getElementById('star_rating');
+        let selectedRating = 0;
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                selectedRating = index + 1;
+                starRatingInput.value = selectedRating;
+                updateStarDisplay();
+                clearError('star_rating');
+            });
+
+            star.addEventListener('mouseenter', () => {
+                highlightStars(index + 1);
+            });
+        });
+
+        document.getElementById('star_rating_container').addEventListener('mouseleave', () => {
+            updateStarDisplay();
+        });
+
+        function highlightStars(rating) {
+            stars.forEach((star, index) => {
+                star.classList.toggle('empty', index >= rating);
+            });
         }
-        
-        form.addEventListener('submit', async function(e) {
+
+        function updateStarDisplay() {
+            stars.forEach((star, index) => {
+                star.classList.toggle('empty', index >= selectedRating);
+            });
+        }
+
+        // Character Counter
+        testimonialTextArea.addEventListener('input', (e) => {
+            const length = e.target.value.length;
+            charCount.textContent = `${length}/500 characters (minimum 50)`;
+            
+            if (length < 50) {
+                charCount.style.color = 'var(--danger-600)';
+            } else if (length > 450) {
+                charCount.style.color = 'var(--warning-600)';
+            } else {
+                charCount.style.color = 'var(--success-600)';
+            }
+            
+            if (length > 0) {
+                clearError('testimonial_text');
+            }
+        });
+
+        // Real-time validation
+        document.getElementById('full_name').addEventListener('input', (e) => {
+            if (e.target.value.trim().length >= 2) {
+                clearError('full_name');
+            }
+        });
+
+        document.getElementById('email').addEventListener('input', (e) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(e.target.value)) {
+                clearError('email');
+            }
+        });
+
+        document.getElementById('source_type').addEventListener('change', (e) => {
+            if (e.target.value) {
+                clearError('source_type');
+            }
+        });
+
+        // Validation Functions
+        function validateForm() {
+            let isValid = true;
+            
+            // Reset all errors
+            clearAllErrors();
+            
+            // Full Name validation
+            const fullName = document.getElementById('full_name').value.trim();
+            if (!fullName) {
+                showError('full_name', 'Full name is required');
+                isValid = false;
+            } else if (fullName.length < 2) {
+                showError('full_name', 'Full name must be at least 2 characters');
+                isValid = false;
+            } else if (fullName.length > 100) {
+                showError('full_name', 'Full name must be less than 100 characters');
+                isValid = false;
+            }
+            
+            // Email validation
+            const email = document.getElementById('email').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email) {
+                showError('email', 'Email address is required');
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                showError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            // Source type validation
+            const sourceType = document.getElementById('source_type').value;
+            if (!sourceType) {
+                showError('source_type', 'Please select how you know us');
+                isValid = false;
+            }
+            
+            // Star rating validation
+            if (!selectedRating || selectedRating < 1) {
+                showError('star_rating', 'Please select a rating');
+                isValid = false;
+            }
+            
+            // Testimonial text validation
+            const testimonialText = document.getElementById('testimonial_text').value.trim();
+            if (!testimonialText) {
+                showError('testimonial_text', 'Testimonial text is required');
+                isValid = false;
+            } else if (testimonialText.length < 50) {
+                showError('testimonial_text', 'Testimonial must be at least 50 characters');
+                isValid = false;
+            } else if (testimonialText.length > 500) {
+                showError('testimonial_text', 'Testimonial must be less than 500 characters');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + '_error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+            
+            if (inputElement) {
+                inputElement.style.borderColor = 'var(--danger-500)';
+            }
+        }
+
+        function clearError(fieldId) {
+            const errorElement = document.getElementById(fieldId + '_error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement) {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            }
+            
+            if (inputElement) {
+                inputElement.style.borderColor = 'var(--gray-300)';
+            }
+        }
+
+        function clearAllErrors() {
+            const errorElements = document.querySelectorAll('.form-error');
+            const inputElements = document.querySelectorAll('.form-input, .form-select, .form-textarea');
+            
+            errorElements.forEach(el => {
+                el.textContent = '';
+                el.style.display = 'none';
+            });
+            
+            inputElements.forEach(el => {
+                el.style.borderColor = 'var(--gray-300)';
+            });
+        }
+
+        function showSuccessMessage() {
+            successMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            
+            // Scroll to success message
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showErrorMessage(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            successMessage.classList.add('hidden');
+            
+            // Scroll to error message
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function setSubmitButtonLoading(loading) {
+            if (loading) {
+                submitBtn.disabled = true;
+                submitBtnText.textContent = 'Submitting...';
+                submitBtn.querySelector('svg').style.display = 'none';
+                
+                // Add spinner
+                const spinner = document.createElement('div');
+                spinner.className = 'spinner';
+                spinner.style.width = '1rem';
+                spinner.style.height = '1rem';
+                spinner.style.marginRight = '0.5rem';
+                submitBtn.insertBefore(spinner, submitBtnText);
+            } else {
+                submitBtn.disabled = false;
+                submitBtnText.textContent = 'Submit Testimonial';
+                submitBtn.querySelector('svg').style.display = 'block';
+                
+                // Remove spinner
+                const spinner = submitBtn.querySelector('.spinner');
+                if (spinner) {
+                    spinner.remove();
+                }
+            }
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Validate star rating
-            if (!starRatingInput.value) {
-                showMessage('Please select a star rating', 'error');
+            // Hide previous messages
+            successMessage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            
+            // Validate form
+            if (!validateForm()) {
+                showErrorMessage('Please correct the errors above and try again.');
                 return;
             }
             
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            setSubmitButtonLoading(true);
             
             try {
-                const formData = new FormData(form);
-                const data = Object.fromEntries(formData.entries());
+                // Prepare form data
+                const formData = {
+                    full_name: document.getElementById('full_name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    source_type: document.getElementById('source_type').value,
+                    star_rating: parseInt(selectedRating),
+                    testimonial_text: document.getElementById('testimonial_text').value.trim(),
+                    // Anti-spam fields (should be empty)
+                    website: document.querySelector('input[name="website"]').value,
+                    url: document.querySelector('input[name="url"]').value
+                };
                 
-                const response = await fetch('/api/testimonials', {
+                // Submit to API
+                const response = await fetch(`${API_BASE_URL}/testimonials`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(formData)
                 });
                 
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showMessage(result.message, 'success');
+                    showSuccessMessage();
                     form.reset();
-                    starRatingInput.value = '';
-                    stars.forEach(s => s.classList.remove('selected'));
-                    charCount.textContent = '0/500 characters';
-                    charCount.style.color = '#6c757d';
+                    selectedRating = 0;
+                    updateStarDisplay();
+                    charCount.textContent = '0/500 characters (minimum 50)';
+                    charCount.style.color = 'var(--gray-500)';
                 } else {
-                    showMessage(result.error || 'Failed to submit testimonial', 'error');
+                    throw new Error(result.error || 'Submission failed');
                 }
+                
             } catch (error) {
                 console.error('Error submitting testimonial:', error);
-                showMessage('Network error. Please try again.', 'error');
+                
+                if (error.message.includes('Too many submissions')) {
+                    showErrorMessage('You have reached the submission limit. Please try again later.');
+                } else if (error.message.includes('Spam detected')) {
+                    showErrorMessage('Your submission was flagged as spam. Please contact support if this is an error.');
+                } else {
+                    showErrorMessage(error.message || 'An error occurred while submitting your testimonial. Please try again.');
+                }
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Testimonial';
+                setSubmitButtonLoading(false);
             }
         });
+
+        // Initialize character counter
+        charCount.textContent = '0/500 characters (minimum 50)';
     </script>
 </body>
 </html>

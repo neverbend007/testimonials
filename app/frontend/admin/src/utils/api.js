@@ -59,6 +59,7 @@ export const testimonialsAPI = {
   approve: (id) => api.post(`/admin/testimonials/${id}/approve`),
   reject: (id) => api.post(`/admin/testimonials/${id}/reject`),
   updateFeatured: (id, featured) => api.patch(`/admin/testimonials/${id}/featured`, { featured }),
+  updateVisibility: (id, visible) => api.patch(`/admin/testimonials/${id}/visibility`, { visible }),
   delete: (id) => api.delete(`/admin/testimonials/${id}`),
 };
 

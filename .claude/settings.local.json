@@ -11,7 +11,15 @@
       "Bash(rmdir:*)",
       "Bash(rm:*)",
       "Bash(npm install:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "WebFetch(domain:tailwindcss.com)",
+      "WebFetch(domain:ui.shadcn.com)",
+      "Bash(npm uninstall:*)",
+      "Bash(rg:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

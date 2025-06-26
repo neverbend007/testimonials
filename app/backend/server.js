@@ -248,7 +248,7 @@ app.get('/api/testimonials', async (req, res) => {
     let query = `
       SELECT id, full_name, testimonial_text, star_rating, source_type, approved_at, is_featured
       FROM testimonials 
-      WHERE status = 'approved'
+      WHERE status = 'approved' AND is_visible = true AND deleted_at IS NULL
     `;
     
     const params = [];
@@ -263,7 +263,7 @@ app.get('/api/testimonials', async (req, res) => {
     const result = await pool.query(query, params);
     
     // Get total count
-    let countQuery = 'SELECT COUNT(*) FROM testimonials WHERE status = \'approved\'';
+    let countQuery = 'SELECT COUNT(*) FROM testimonials WHERE status = \'approved\' AND is_visible = true AND deleted_at IS NULL';
     let countParams = [];
     if (featured !== undefined) {
       countQuery += ' AND is_featured = $1';
@@ -494,7 +494,7 @@ app.get('/api/admin/testimonials/pending', authenticateToken, async (req, res) =
     const query = `
       SELECT id, full_name, email, testimonial_text, star_rating, source_type, submitted_at
       FROM testimonials 
-      WHERE status = 'pending' 
+      WHERE status = 'pending' AND deleted_at IS NULL
       ORDER BY submitted_at DESC
     `;
     
@@ -521,8 +521,9 @@ app.get('/api/admin/testimonials', authenticateToken, async (req, res) => {
   try {
     const query = `
       SELECT id, full_name, email, testimonial_text, star_rating, source_type, 
-             status, submitted_at, approved_at, is_featured, updated_at
+             status, submitted_at, approved_at, is_featured, is_visible, deleted_at, updated_at
       FROM testimonials 
+      WHERE deleted_at IS NULL
       ORDER BY submitted_at DESC
     `;
     
@@ -678,6 +679,107 @@ app.patch('/api/admin/testimonials/:id/featured', authenticateToken, validateCSR
     res.status(500).json({ error: 'Failed to update featured status' });
   }
 });
+
+/**
+ * @swagger
+ * /api/admin/testimonials/{id}/visibility:
+ *   patch:
+ *     summary: Toggle testimonial visibility
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               visible:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Visibility updated
+ */
+app.patch('/api/admin/testimonials/:id/visibility', authenticateToken, validateCSRF, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { visible } = req.body;
+    
+    const query = `
+      UPDATE testimonials 
+      SET is_visible = $1, updated_at = NOW()
+      WHERE id = $2 AND status = 'approved' AND deleted_at IS NULL
+      RETURNING id, full_name, is_visible
+    `;
+    
+    const result = await pool.query(query, [visible, id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Testimonial not found or not approved' });
+    }
+    
+    res.json({ 
+      message: `Testimonial ${visible ? 'shown' : 'hidden'} successfully`,
+      testimonial: result.rows[0]
+    });
+    
+  } catch (error) {
+    console.error('Error updating visibility:', error);
+    res.status(500).json({ error: 'Failed to update visibility' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/admin/testimonials/{id}:
+ *   delete:
+ *     summary: Soft delete a testimonial
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Testimonial deleted
+ */
+app.delete('/api/admin/testimonials/:id', authenticateToken, validateCSRF, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const query = `
+      UPDATE testimonials 
+      SET deleted_at = NOW(), updated_at = NOW()
+      WHERE id = $1 AND deleted_at IS NULL
+      RETURNING id, full_name
+    `;
+    
+    const result = await pool.query(query, [id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Testimonial not found or already deleted' });
+    }
+    
+    res.json({ 
+      message: `Testimonial by ${result.rows[0].full_name} deleted successfully`,
+      id: result.rows[0].id 
+    });
+    
+  } catch (error) {
+    console.error('Error deleting testimonial:', error);
+    res.status(500).json({ error: 'Failed to delete testimonial' });
+  }
+});
+
 
 // User management routes
 
