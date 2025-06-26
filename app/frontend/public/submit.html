@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Testimonial</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/common.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/submit">Submit Testimonial</a></li>
+                <li><a href="/testimonials">View Testimonials</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h1>Submit Your Testimonial</h1>
+            <p>Share your experience with our AI/Automation services or Skool community. Your testimonial will be reviewed before publication.</p>
+            
+            <div id="message" class="hidden"></div>
+            
+            <form id="testimonialForm">
+                <div class="form-group">
+                    <label for="full_name">Full Name *</label>
+                    <input type="text" id="full_name" name="full_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="source_type">You are a: *</label>
+                    <select id="source_type" name="source_type" required>
+                        <option value="">Please select...</option>
+                        <option value="Agency Client">Agency Client</option>
+                        <option value="Skool Community Member">Skool Community Member</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Star Rating *</label>
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="star_rating" name="star_rating" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="testimonial_text">Your Testimonial * (50-500 characters)</label>
+                    <textarea id="testimonial_text" name="testimonial_text" placeholder="Share your experience..." required minlength="50" maxlength="500"></textarea>
+                    <small id="charCount" style="color: #6c757d;">0/500 characters</small>
+                </div>
+                
+                <!-- Honeypot fields for spam protection -->
+                <input type="text" name="website" style="display: none;" tabindex="-1" autocomplete="off">
+                <input type="text" name="url" style="display: none;" tabindex="-1" autocomplete="off">
+                
+                <button type="submit" id="submitBtn">Submit Testimonial</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Star rating functionality
+        const stars = document.querySelectorAll('.star');
+        const starRatingInput = document.getElementById('star_rating');
+        
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.getAttribute('data-rating');
+                starRatingInput.value = rating;
+                
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.classList.add('selected');
+                    } else {
+                        s.classList.remove('selected');
+                    }
+                });
+            });
+            
+            star.addEventListener('mouseover', function() {
+                const rating = this.getAttribute('data-rating');
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.style.color = '#ffc107';
+                    } else {
+                        s.style.color = '#ddd';
+                    }
+                });
+            });
+        });
+        
+        document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+            const selectedRating = starRatingInput.value;
+            stars.forEach((s, index) => {
+                if (index < selectedRating) {
+                    s.style.color = '#ffc107';
+                } else {
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+        
+        // Character counter
+        const testimonialText = document.getElementById('testimonial_text');
+        const charCount = document.getElementById('charCount');
+        
+        testimonialText.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = `${count}/500 characters`;
+            
+            if (count < 50) {
+                charCount.style.color = '#dc3545';
+            } else if (count > 450) {
+                charCount.style.color = '#ffc107';
+            } else {
+                charCount.style.color = '#28a745';
+            }
+        });
+        
+        // Form submission
+        const form = document.getElementById('testimonialForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('message');
+        
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.classList.remove('hidden');
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate star rating
+            if (!starRatingInput.value) {
+                showMessage('Please select a star rating', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            try {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                
+                const response = await fetch('/api/testimonials', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    form.reset();
+                    starRatingInput.value = '';
+                    stars.forEach(s => s.classList.remove('selected'));
+                    charCount.textContent = '0/500 characters';
+                    charCount.style.color = '#6c757d';
+                } else {
+                    showMessage(result.error || 'Failed to submit testimonial', 'error');
+                }
+            } catch (error) {
+                console.error('Error submitting testimonial:', error);
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Testimonial';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Testimonials</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/common.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/submit">Submit Testimonial</a></li>
+                <li><a href="/testimonials">View Testimonials</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h1>Customer Testimonials</h1>
+            <p>See what our clients and community members have to say about their experience with our AI/Automation services.</p>
+            
+            <!-- Search and Filter Controls -->
+            <div class="testimonials-controls">
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search testimonials..." class="search-input">
+                    <button id="clearSearch" class="btn-secondary">Clear</button>
+                </div>
+                <div class="filter-container">
+                    <select id="sourceFilter" class="filter-select">
+                        <option value="">All Sources</option>
+                        <option value="Agency Client">Agency Clients</option>
+                        <option value="Skool Community Member">Skool Community</option>
+                    </select>
+                    <select id="ratingFilter" class="filter-select">
+                        <option value="">All Ratings</option>
+                        <option value="5">5 Stars</option>
+                        <option value="4">4+ Stars</option>
+                        <option value="3">3+ Stars</option>
+                    </select>
+                    <button id="showFeatured" class="btn-primary">Featured Only</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">
+            Loading testimonials...
+        </div>
+        
+        <div id="error" class="message error hidden">
+            Failed to load testimonials. Please try again later.
+        </div>
+        
+        <div id="testimonials" class="testimonials-grid"></div>
+        
+        <!-- Pagination -->
+        <div id="pagination" class="pagination-container hidden">
+            <div class="pagination-info">
+                <span id="paginationInfo">Showing 1-10 of 0 testimonials</span>
+            </div>
+            <div class="pagination-controls">
+                <button id="prevPage" class="btn-secondary" disabled>Previous</button>
+                <div id="pageNumbers" class="page-numbers"></div>
+                <button id="nextPage" class="btn-secondary" disabled>Next</button>
+            </div>
+        </div>
+        
+        <div id="empty" class="card hidden">
+            <p style="text-align: center; color: #6c757d;">No testimonials available yet. <a href="/submit">Be the first to submit one!</a></p>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let allTestimonials = [];
+        let filteredTestimonials = [];
+        let currentPage = 1;
+        const itemsPerPage = 6;
+        let currentFilters = {
+            search: '',
+            source: '',
+            rating: '',
+            featuredOnly: false
+        };
+
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) {
+                return 'Unknown date';
+            }
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) {
+                    return 'Invalid date';
+                }
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch (error) {
+                console.warn('Error formatting date:', error);
+                return 'Unknown date';
+            }
+        }
+        
+        // Generate star rating HTML
+        function generateStarRating(rating) {
+            const safeRating = Math.max(0, Math.min(5, parseInt(rating) || 0));
+            let starsHtml = '<div class="star-display">';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= safeRating) {
+                    starsHtml += '<span class="star selected">★</span>';
+                } else {
+                    starsHtml += '<span class="star">★</span>';
+                }
+            }
+            starsHtml += '</div>';
+            return starsHtml;
+        }
+        
+        // Apply filters to testimonials
+        function applyFilters() {
+            filteredTestimonials = allTestimonials.filter(testimonial => {
+                // Search filter
+                if (currentFilters.search) {
+                    const searchTerm = currentFilters.search.toLowerCase();
+                    const searchableText = (
+                        (testimonial.full_name || '') + ' ' +
+                        (testimonial.testimonial_text || '') + ' ' +
+                        (testimonial.source_type || '')
+                    ).toLowerCase();
+                    
+                    if (!searchableText.includes(searchTerm)) {
+                        return false;
+                    }
+                }
+                
+                // Source filter
+                if (currentFilters.source && testimonial.source_type !== currentFilters.source) {
+                    return false;
+                }
+                
+                // Rating filter
+                if (currentFilters.rating) {
+                    const minRating = parseInt(currentFilters.rating);
+                    if ((testimonial.star_rating || 0) < minRating) {
+                        return false;
+                    }
+                }
+                
+                // Featured only filter
+                if (currentFilters.featuredOnly && !testimonial.is_featured) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Sort by featured first, then by date
+            filteredTestimonials.sort((a, b) => {
+                // Featured testimonials first
+                if (a.is_featured && !b.is_featured) return -1;
+                if (!a.is_featured && b.is_featured) return 1;
+                
+                // Then by date (newest first)
+                const dateA = new Date(a.approved_at || a.submitted_at);
+                const dateB = new Date(b.approved_at || b.submitted_at);
+                return dateB - dateA;
+            });
+            
+            currentPage = 1;
+            displayTestimonials();
+            updatePagination();
+        }
+        
+        // Display testimonials for current page
+        function displayTestimonials() {
+            const testimonialsDiv = safeGetElement('testimonials');
+            const emptyDiv = safeGetElement('empty');
+            
+            if (!testimonialsDiv || !emptyDiv) {
+                console.error('Required DOM elements not found');
+                return;
+            }
+            
+            testimonialsDiv.innerHTML = '';
+            
+            if (filteredTestimonials.length === 0) {
+                emptyDiv.classList.remove('hidden');
+                document.getElementById('pagination').classList.add('hidden');
+                return;
+            }
+            
+            emptyDiv.classList.add('hidden');
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredTestimonials.length);
+            const pageTestimonials = filteredTestimonials.slice(startIndex, endIndex);
+            
+            pageTestimonials.forEach((testimonial, index) => {
+                try {
+                    const testimonialElement = document.createElement('div');
+                    testimonialElement.className = 'testimonial-item' + (testimonial.is_featured ? ' featured' : '');
+                    
+                    testimonialElement.innerHTML = `
+                        ${testimonial.is_featured ? '<div class="featured-badge">★ Featured</div>' : ''}
+                        <div class="testimonial-meta">
+                            <div>
+                                <div class="testimonial-author">${escapeHtml(testimonial.full_name || 'Anonymous')}</div>
+                                ${generateStarRating(testimonial.star_rating || 0)}
+                            </div>
+                            <div class="testimonial-source">${escapeHtml(testimonial.source_type || 'Unknown')}</div>
+                        </div>
+                        <div class="testimonial-text">"${escapeHtml(testimonial.testimonial_text || 'No content')}"</div>
+                        <div style="text-align: right; font-size: 0.9em; color: #6c757d; margin-top: 10px;">
+                            ${formatDate(testimonial.approved_at)}
+                        </div>
+                    `;
+                    
+                    testimonialsDiv.appendChild(testimonialElement);
+                } catch (itemError) {
+                    console.error(`Error rendering testimonial ${index}:`, itemError);
+                }
+            });
+        }
+        
+        // Update pagination controls
+        function updatePagination() {
+            const paginationDiv = document.getElementById('pagination');
+            const paginationInfo = document.getElementById('paginationInfo');
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            const pageNumbers = document.getElementById('pageNumbers');
+            
+            if (!paginationDiv || !paginationInfo || !prevButton || !nextButton || !pageNumbers) {
+                return;
+            }
+            
+            const totalPages = Math.ceil(filteredTestimonials.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                paginationDiv.classList.add('hidden');
+                return;
+            }
+            
+            paginationDiv.classList.remove('hidden');
+            
+            // Update info
+            const startIndex = (currentPage - 1) * itemsPerPage + 1;
+            const endIndex = Math.min(currentPage * itemsPerPage, filteredTestimonials.length);
+            paginationInfo.textContent = `Showing ${startIndex}-${endIndex} of ${filteredTestimonials.length} testimonials`;
+            
+            // Update buttons
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+            
+            // Update page numbers
+            pageNumbers.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    const pageButton = document.createElement('button');
+                    pageButton.textContent = i;
+                    pageButton.className = i === currentPage ? 'page-number active' : 'page-number';
+                    pageButton.onclick = () => {
+                        currentPage = i;
+                        displayTestimonials();
+                        updatePagination();
+                    };
+                    pageNumbers.appendChild(pageButton);
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.className = 'page-ellipsis';
+                    pageNumbers.appendChild(ellipsis);
+                }
+            }
+        }
+        
+        // Load and display testimonials
+        async function loadTestimonials() {
+            const loadingDiv = safeGetElement('loading');
+            const errorDiv = safeGetElement('error');
+            
+            if (!loadingDiv || !errorDiv) {
+                console.error('Required DOM elements not found');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/testimonials?limit=1000');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: Failed to fetch testimonials`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data || !Array.isArray(data.testimonials)) {
+                    throw new Error('Invalid response format');
+                }
+                
+                allTestimonials = data.testimonials;
+                loadingDiv.classList.add('hidden');
+                
+                applyFilters();
+                
+            } catch (error) {
+                const errorInfo = handleAsyncError(error, 'Loading testimonials');
+                console.error('Error loading testimonials:', error);
+                loadingDiv.classList.add('hidden');
+                errorDiv.classList.remove('hidden');
+                errorDiv.textContent = errorInfo.message;
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('searchInput');
+            const clearSearch = document.getElementById('clearSearch');
+            
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        currentFilters.search = e.target.value.trim();
+                        applyFilters();
+                    }, 300);
+                });
+            }
+            
+            if (clearSearch) {
+                clearSearch.addEventListener('click', () => {
+                    searchInput.value = '';
+                    currentFilters.search = '';
+                    applyFilters();
+                });
+            }
+            
+            // Filter dropdowns
+            const sourceFilter = document.getElementById('sourceFilter');
+            const ratingFilter = document.getElementById('ratingFilter');
+            
+            if (sourceFilter) {
+                sourceFilter.addEventListener('change', (e) => {
+                    currentFilters.source = e.target.value;
+                    applyFilters();
+                });
+            }
+            
+            if (ratingFilter) {
+                ratingFilter.addEventListener('change', (e) => {
+                    currentFilters.rating = e.target.value;
+                    applyFilters();
+                });
+            }
+            
+            // Featured button
+            const showFeatured = document.getElementById('showFeatured');
+            if (showFeatured) {
+                showFeatured.addEventListener('click', () => {
+                    currentFilters.featuredOnly = !currentFilters.featuredOnly;
+                    showFeatured.textContent = currentFilters.featuredOnly ? 'Show All' : 'Featured Only';
+                    showFeatured.className = currentFilters.featuredOnly ? 'btn-secondary' : 'btn-primary';
+                    applyFilters();
+                });
+            }
+            
+            // Pagination buttons
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            
+            if (prevButton) {
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTestimonials();
+                        updatePagination();
+                    }
+                });
+            }
+            
+            if (nextButton) {
+                nextButton.addEventListener('click', () => {
+                    const totalPages = Math.ceil(filteredTestimonials.length / itemsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTestimonials();
+                        updatePagination();
+                    }
+                });
+            }
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (text === null || text === undefined) {
+                return '';
+            }
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            loadTestimonials();
+        });
+    </script>
+</body>
+</html>
