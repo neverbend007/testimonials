@@ -9,6 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 * Never just focus on the first problem you find. Always analyse deeply and think about deeply the full context of the problem across the whole codebase. 
 * Never use a scattergun approach to solving problems
 * If you know something is not best practice, don't fucking do it!
+* No files over 250 lines of code unless the functionality cannot be split. 
+* Always cycle containers after changes to the code. Use docker compose down and docker compose up -d
 
 ## Project Overview
 
