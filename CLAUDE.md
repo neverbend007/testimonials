@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## General Guidlines
+* Never, ever, ever focus on quick wins.
+* Never, ever, ever execute without a comprehensive plan.
+* Question any decision you are about to make against these rules.
+* Never just focus on the first problem you find. Always analyse deeply and think about deeply the full context of the problem across the whole codebase. 
+* Never use a scattergun approach to solving problems
+* If you know something is not best practice, don't fucking do it!
+
 ## Project Overview
 
 This is a testimonial collection and display system designed to gather social proof from AI/Automation Agency clients and Skool community members. The system enables embedding collection forms and testimonial displays across company websites.

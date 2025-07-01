@@ -71,4 +71,15 @@ export const usersAPI = {
   delete: (id) => api.delete(`/admin/users/${id}`),
 };
 
+// API Keys API  
+export const apiKeysAPI = {
+  getAll: () => api.get('/admin/api-keys'),
+  create: (keyData) => api.post('/admin/api-keys', keyData),
+  update: (id, keyData) => api.patch(`/admin/api-keys/${id}`, keyData),
+  delete: (id) => api.delete(`/admin/api-keys/${id}`),
+};
+
+// Export api as apiClient for compatibility
+export const apiClient = api;
+
 export default api;

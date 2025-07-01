@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.jsx';
-import { LogOut, User, FileText, Users, Menu, X } from 'lucide-react';
+import { LogOut, User, FileText, Users, Menu, X, Settings, Key } from 'lucide-react';
 import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
 
@@ -18,6 +18,8 @@ const Layout = ({ children }) => {
 
   const navigation = [
     { name: 'Testimonials', href: '/testimonials', icon: FileText },
+    { name: 'Widgets', href: '/widgets', icon: Settings },
+    { name: 'API Keys', href: '/api-keys', icon: Key },
     { name: 'Users', href: '/users', icon: Users },
   ];
 

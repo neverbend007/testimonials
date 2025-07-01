@@ -6,6 +6,8 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Testimonials from './pages/Testimonials';
 import Users from './pages/Users';
+import { Widgets } from './pages/Widgets';
+import ApiKeys from './pages/ApiKeys';
 
 function App() {
   return (
@@ -30,6 +32,26 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Users />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/widgets"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Widgets />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/api-keys"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ApiKeys />
                 </Layout>
               </ProtectedRoute>
             }

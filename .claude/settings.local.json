@@ -19,7 +19,14 @@
       "WebFetch(domain:ui.shadcn.com)",
       "Bash(npm uninstall:*)",
       "Bash(rg:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(cp:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(ls:*)",
+      "Bash(diff:*)",
+      "Bash(npm run build:collect:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

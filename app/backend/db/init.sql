@@ -59,3 +59,31 @@ VALUES
 INSERT INTO testimonials (full_name, email, testimonial_text, star_rating, source_type, status) 
 VALUES 
     ('Jane Doe', 'jane@example.com', 'Currently testing the approval process. This testimonial should appear in the pending queue for admin review.', 4, 'Skool Community Member', 'pending');
+
+-- API Keys table for widget authentication
+CREATE TABLE IF NOT EXISTS api_keys (
+    id SERIAL PRIMARY KEY,
+    key_id VARCHAR(32) UNIQUE NOT NULL,
+    key_secret VARCHAR(64) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    domain_restrictions TEXT[], -- Array of allowed domains
+    rate_limit_per_hour INTEGER DEFAULT 1000,
+    is_active BOOLEAN DEFAULT true,
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    last_used_at TIMESTAMP,
+    usage_count INTEGER DEFAULT 0
+);
+
+-- Indexes for API keys
+CREATE INDEX IF NOT EXISTS idx_api_keys_key_id ON api_keys(key_id);
+CREATE INDEX IF NOT EXISTS idx_api_keys_active ON api_keys(is_active);
+CREATE INDEX IF NOT EXISTS idx_api_keys_created_by ON api_keys(created_by);
+
+-- Insert default API key for testing
+INSERT INTO api_keys (key_id, key_secret, name, description, created_by) 
+VALUES 
+    ('demo_key_12345', 'demo_secret_67890abcdef', 'Demo API Key', 'Default API key for testing widgets', 1)
+ON CONFLICT (key_id) DO NOTHING;

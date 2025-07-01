@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Preview - Testimonials System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #2563eb;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-description {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .example-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .example-description {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .widget-container {
+            min-height: 300px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f8fafc;
+        }
+
+        .full-width-example {
+            grid-column: 1 / -1;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .loading-indicator {
+            text-align: center;
+            color: #64748b;
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Widget Preview & Testing</h1>
+            <p>Test your testimonial widgets before deploying them to your website</p>
+            <a href="http://localhost:3002/widgets" class="back-link">
+                ← Back to Widget Management
+            </a>
+        </div>
+
+        <!-- Display Widgets Section -->
+        <div class="section">
+            <h2 class="section-title">Display Widgets</h2>
+            <p class="section-description">
+                Display widgets show approved testimonials in various layouts and styles
+            </p>
+
+            <div class="examples-grid">
+                <!-- Grid Layout Example -->
+                <div class="example-card">
+                    <h3 class="example-title">Grid Layout</h3>
+                    <p class="example-description">
+                        Responsive grid layout showing testimonials in cards
+                    </p>
+                    <div class="widget-container">
+                        <div id="display-grid" 
+                             data-testimonials-display
+                             data-theme="light"
+                             data-layout="grid"
+                             data-count="6"
+                             data-title="Customer Reviews"
+                             data-subtitle="What our customers say about us"
+                             data-primary-color="#3b82f6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List Layout Example -->
+                <div class="example-card">
+                    <h3 class="example-title">List Layout</h3>
+                    <p class="example-description">
+                        Vertical list layout with horizontal testimonial cards
+                    </p>
+                    <div class="widget-container">
+                        <div id="display-list" 
+                             data-testimonials-display
+                             data-theme="light"
+                             data-layout="list"
+                             data-count="4"
+                             data-title="Client Testimonials"
+                             data-primary-color="#059669">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carousel Layout Example -->
+                <div class="example-card">
+                    <h3 class="example-title">Carousel Layout</h3>
+                    <p class="example-description">
+                        Interactive carousel with navigation controls
+                    </p>
+                    <div class="widget-container">
+                        <div id="display-carousel" 
+                             data-testimonials-display
+                             data-theme="light"
+                             data-layout="carousel"
+                             data-count="5"
+                             data-title="Success Stories"
+                             data-primary-color="#dc2626">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Single Layout Example -->
+                <div class="example-card">
+                    <h3 class="example-title">Single Layout</h3>
+                    <p class="example-description">
+                        Display one featured testimonial prominently
+                    </p>
+                    <div class="widget-container">
+                        <div id="display-single" 
+                             data-testimonials-display
+                             data-theme="light"
+                             data-layout="single"
+                             data-count="1"
+                             data-show-featured-only="true"
+                             data-title="Featured Testimonial"
+                             data-primary-color="#7c3aed">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dark Theme Example -->
+                <div class="example-card full-width-example">
+                    <h3 class="example-title">Dark Theme Grid</h3>
+                    <p class="example-description">
+                        Dark theme variant with grid layout
+                    </p>
+                    <div class="widget-container" style="background: #1f2937;">
+                        <div id="display-dark" 
+                             data-testimonials-display
+                             data-theme="dark"
+                             data-layout="grid"
+                             data-count="6"
+                             data-title="Customer Feedback"
+                             data-subtitle="See what our clients are saying"
+                             data-primary-color="#f59e0b">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collection Widgets Section -->
+        <div class="section">
+            <h2 class="section-title">Collection Widgets</h2>
+            <p class="section-description">
+                Collection widgets allow visitors to submit testimonials directly on your website
+            </p>
+
+            <div class="examples-grid">
+                <!-- Light Theme Collection -->
+                <div class="example-card">
+                    <h3 class="example-title">Light Theme Form</h3>
+                    <p class="example-description">
+                        Standard light theme collection form
+                    </p>
+                    <div class="widget-container">
+                        <div id="collection-light" 
+                             data-testimonials-collect
+                             data-theme="light"
+                             data-title="Share Your Experience"
+                             data-subtitle="Help others by sharing your success story"
+                             data-submit-button-text="Submit Review"
+                             data-primary-color="#3b82f6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dark Theme Collection -->
+                <div class="example-card">
+                    <h3 class="example-title">Dark Theme Form</h3>
+                    <p class="example-description">
+                        Dark theme variant of the collection form
+                    </p>
+                    <div class="widget-container" style="background: #1f2937;">
+                        <div id="collection-dark" 
+                             data-testimonials-collect
+                             data-theme="dark"
+                             data-title="Tell Us Your Story"
+                             data-subtitle="Your feedback helps us improve"
+                             data-submit-button-text="Submit Testimonial"
+                             data-primary-color="#10b981">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customized Collection Form -->
+                <div class="example-card full-width-example">
+                    <h3 class="example-title">Customized Collection Form</h3>
+                    <p class="example-description">
+                        Collection form with custom styling and messages
+                    </p>
+                    <div class="widget-container">
+                        <div id="collection-custom" 
+                             data-testimonials-collect
+                             data-theme="light"
+                             data-title="We Value Your Feedback"
+                             data-subtitle="Share your experience working with our AI automation solutions"
+                             data-submit-button-text="Share My Experience"
+                             data-primary-color="#7c3aed"
+                             data-border-radius="12px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Collection Widgets Section -->
+        <div class="section">
+            <h2 class="section-title">Modal Collection Widgets</h2>
+            <p class="section-description">
+                Modal collection widgets display as trigger buttons that open testimonial forms in popup overlays
+            </p>
+
+            <div class="examples-grid">
+                <!-- Light Theme Modal -->
+                <div class="example-card">
+                    <h3 class="example-title">Light Theme Modal</h3>
+                    <p class="example-description">
+                        Click the button to open the testimonial form in a modal
+                    </p>
+                    <div class="widget-container">
+                        <div id="modal-light" 
+                             data-testimonials-collect
+                             data-widget-mode="modal"
+                             data-theme="light"
+                             data-title="Share Your Experience"
+                             data-subtitle="Help others by sharing your success story"
+                             data-trigger-text="Share Your Experience"
+                             data-submit-button-text="Submit Review"
+                             data-primary-color="#3b82f6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dark Theme Modal -->
+                <div class="example-card">
+                    <h3 class="example-title">Dark Theme Modal</h3>
+                    <p class="example-description">
+                        Dark theme modal with custom trigger text
+                    </p>
+                    <div class="widget-container">
+                        <div id="modal-dark" 
+                             data-testimonials-collect
+                             data-widget-mode="modal"
+                             data-theme="dark"
+                             data-title="Tell Us Your Story"
+                             data-subtitle="Your feedback helps us improve"
+                             data-trigger-text="Leave Feedback"
+                             data-submit-button-text="Submit Testimonial"
+                             data-primary-color="#10b981">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Modal Example -->
+                <div class="example-card full-width-example">
+                    <h3 class="example-title">Custom Modal Widget</h3>
+                    <p class="example-description">
+                        Modal with custom styling, trigger text, and close behavior
+                    </p>
+                    <div class="widget-container">
+                        <div id="modal-custom" 
+                             data-testimonials-collect
+                             data-widget-mode="modal"
+                             data-theme="light"
+                             data-title="We Value Your Feedback"
+                             data-subtitle="Share your experience with our AI automation solutions"
+                             data-trigger-text="🚀 Share My Success Story"
+                             data-submit-button-text="Share My Experience"
+                             data-primary-color="#7c3aed"
+                             data-border-radius="12px"
+                             data-modal-close-on-backdrop="true"
+                             data-modal-close-on-escape="true">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading and Error States -->
+        <div class="section">
+            <h2 class="section-title">Testing Notes</h2>
+            <div class="example-card">
+                <h3 class="example-title">Widget Testing Information</h3>
+                <div class="example-description">
+                    <p><strong>API Endpoint:</strong> http://localhost:3001/api/testimonials</p>
+                    <p><strong>Widget Files:</strong> Served from /widgets/ directory</p>
+                    <p><strong>CORS:</strong> Configured to allow cross-origin requests</p>
+                    <p><strong>Collection Forms:</strong> Will submit to the live API (use test data only)</p>
+                </div>
+                
+                <div class="code-block">
+// If widgets don't load, check:
+// 1. Backend server is running on port 3001
+// 2. Widget files are built in /dist directory
+// 3. CORS headers are properly configured
+// 4. No JavaScript console errors
+
+// Test API endpoint:
+fetch('http://localhost:3001/api/testimonials')
+  .then(response => response.json())
+  .then(data => console.log('API Response:', data))
+  .catch(error => console.error('API Error:', error));
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget Scripts -->
+    <script src="http://localhost:3001/widgets/testimonials-display.min.js"></script>
+    <script src="http://localhost:3001/widgets/testimonials-collect.min.js"></script>
+    
+    <script>
+        // Add error handling for widget initialization
+        window.addEventListener('error', function(e) {
+            console.error('Widget Error:', e.error);
+            
+            // Show error message in widget containers
+            const containers = document.querySelectorAll('[data-testimonials-display], [data-testimonials-collect]');
+            containers.forEach(container => {
+                if (container.innerHTML.trim() === '') {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: #dc2626; background: #fee2e2; border-radius: 8px;">
+                            <strong>Widget Failed to Load</strong><br>
+                            Check browser console for details
+                        </div>
+                    `;
+                }
+            });
+        });
+
+        // Check if widgets loaded successfully after a delay
+        setTimeout(() => {
+            const displayWidgets = document.querySelectorAll('[data-testimonials-display]');
+            const collectionWidgets = document.querySelectorAll('[data-testimonials-collect]');
+            
+            displayWidgets.forEach(widget => {
+                if (widget.innerHTML.trim() === '') {
+                    widget.innerHTML = '<div class="loading-indicator">Display widget loading...</div>';
+                }
+            });
+
+            collectionWidgets.forEach(widget => {
+                if (widget.innerHTML.trim() === '') {
+                    widget.innerHTML = '<div class="loading-indicator">Collection widget loading...</div>';
+                }
+            });
+        }, 2000);
+
+        // Log widget initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Widget Preview Page Loaded');
+            console.log('Display widgets found:', document.querySelectorAll('[data-testimonials-display]').length);
+            console.log('Collection widgets found:', document.querySelectorAll('[data-testimonials-collect]').length);
+        });
+    </script>
+</body>
+</html>
